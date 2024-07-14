@@ -31,6 +31,15 @@ To run the API, follow these steps:
 
 ## Additional Setup Instructions
 - **Copy `env.example`**: Before running the API, make a copy of `env.example` and rename it to `.env.docker`. Update the necessary environment variables in this file.
+- **Generate Public and Private Keys**: To generate the public and private keys for OAuth2 authentication, follow these steps:
+  1. Generate a private key:
+     ```bash
+     openssl genrsa -out private.key 2048
+     ```
+  2. Generate a public key from the private key:
+     ```bash
+     openssl rsa -in private.key -pubout -out public.key
+     ```
 - **Setup with Makefile**: This project includes a Makefile that provides shortcuts for common tasks. Use `make <target>` to simplify setup and deployment processes.
 
 ## API Documentation

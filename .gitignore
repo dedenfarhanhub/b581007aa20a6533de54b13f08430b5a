@@ -1,0 +1,6 @@
+.idea/
+.env
+.env.docker
+vendor/
+public.key
+private.key
