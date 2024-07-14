@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: levart_email_app
+    ports:
+      - "8200:80"
+    volumes:
+      - .:/var/www/html
+      - .env.docker:/var/www/html/.env
+    env_file:
+      - .env.docker
+    networks:
+      - levart-email-app
+    depends_on:
+      - rabbitmq
+      - postgres
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    networks:
+      - levart-email-app
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    restart: always
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    networks:
+      - levart-email-app
+    env_file:
+      - .env.docker
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  levart-email-app:
+    driver: bridge
+
+volumes:
+  postgres_data:

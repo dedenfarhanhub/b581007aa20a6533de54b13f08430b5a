@@ -1,0 +1,162 @@
+openapi: 3.0.0
+info:
+  title: Levart Email API
+  version: 1.0.0
+  description: Example API for sending emails
+paths:
+  /email/send-email:
+    post:
+      security:
+        - apiAuth: [ ]
+      summary: Send an email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipient:
+                  type: string
+                subject:
+                  type: string
+                body:
+                  type: string
+              required:
+                - recipient
+                - subject
+                - body
+      responses:
+        '200':
+          description: Email successfully queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Email queued successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid input
+                  errors:
+                    type: array
+                    items:
+                      type: string
+  /token:
+    post:
+      summary: Generate OAuth2 Token
+      description: Generates an OAuth2 token using client credentials grant.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  example: client_credentials
+                client_id:
+                  type: string
+                  example: client1
+                client_secret:
+                  type: string
+                  example: client1_secret
+      responses:
+        '200':
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      token_type:
+                        type: string
+                        example: Bearer
+                      expires_in:
+                        type: integer
+                        example: 3600
+                      access_token:
+                        type: string
+                        example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJoYWhhMTIzIiwianRpIjoiZWIxMGVlMTVjNDYxZmE4Njg1NzFmMTU5MDk4ZDU4ODA2MjNlZTdkYmJiNjNiZThhNTRiNGViMDQ5MmRjZTlhNGU1ZmNjYjQ4NTQ3YjQzMTAiLCJpYXQiOjE3MjA5MzQ0MzEuMTI2MDU2LCJuYmYiOjE3MjA5MzQ0MzEuMTI2MDU4LCJleHAiOjE3MjA5MzgwMzEuMTEzNTE5LCJzdWIiOiIiLCJzY29wZXMiOltdfQ.khaxOksD9S2NnpD6RG4skyyRttsUMkKclxzSHJdx1lNlbfBXl0e1duRMCWvgR3OqdWSM7gLhNzu2kY2R9LceVF34_kmeNQNyzLPqzXSMxHylL6Du-vHJFFB0SmuW-YnOMD_szNP4Hg_cKqst1QTDOR8QH8bdbwLq7rZudW67_ean6nX388wk3fBftGApQW0l4EN03Gs4yeHPxyTjM-pD-jx8Z-52WV0miZDL16ot9cBxlpCMonF2KPAvXQittkSspL2VtQ-lFXEJIwebsI3FMlpWiimHPf68LvxJnY6ryP45wJQ_9YU6Y161XBIViCY2zRsT424KglB569LdIvZxMA
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid request parameters
+                  hint:
+                    type: string
+                    example: The grant type is not supported by the authorization server.
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: An unexpected error occurred
+                  hint:
+                    type: string
+                    example: Detailed error message
+components:
+  securitySchemes:
+    apiAuth:
+      type: http
+      description: Login with email and password to get the authentication token
+      name: Token based Based
+      in: header
+      bearerFormat: JWT
+      scheme: bearer
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          properties:
+            token_type:
+              type: string
+              example: Bearer
+            expires_in:
+              type: integer
+              example: 3600
+            access_token:
+              type: string
+              example: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJoYWhhMTIzIiwianRpIjoiZWIxMGVlMTVjNDYxZmE4Njg1NzFmMTU5MDk4ZDU4ODA2MjNlZTdkYmJiNjNiZThhNTRiNGViMDQ5MmRjZTlhNGU1ZmNjYjQ4NTQ3YjQzMTAiLCJpYXQiOjE3MjA5MzQ0MzEuMTI2MDU2LCJuYmYiOjE3MjA5MzQ0MzEuMTI2MDU4LCJleHAiOjE3MjA5MzgwMzEuMTEzNTE5LCJzdWIiOiIiLCJzY29wZXMiOltdfQ.khaxOksD9S2NnpD6RG4skyyRttsUMkKclxzSHJdx1lNlbfBXl0e1duRMCWvgR3OqdWSM7gLhNzu2kY2R9LceVF34_kmeNQNyzLPqzXSMxHylL6Du-vHJFFB0SmuW-YnOMD_szNP4Hg_cKqst1QTDOR8QH8bdbwLq7rZudW67_ean6nX388wk3fBftGApQW0l4EN03Gs4yeHPxyTjM-pD-jx8Z-52WV0miZDL16ot9cBxlpCMonF2KPAvXQittkSspL2VtQ-lFXEJIwebsI3FMlpWiimHPf68LvxJnY6ryP45wJQ_9YU6Y161XBIViCY2zRsT424KglB569LdIvZxMA
